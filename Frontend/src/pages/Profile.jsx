@@ -49,7 +49,7 @@ const navigate=useNavigate();
         e.preventDefault();
         setIsLoading(true);
         const token=authUser.token?authUser.token:authUser.user.token;
-        console.log("Form submitted:", formData);
+        // console.log("Form submitted:", formData);
           const imgData = new FormData();
   if(formData.profilePicture){
     imgData.append("profilePicture", formData.profilePicture);

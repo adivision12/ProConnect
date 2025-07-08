@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import dp from './../assets/dp.jpg';
 import { useAuth } from '../Context/AuthProvider';
 import AllPosts from '../Users/Posts';
-import '../app.css'
 import { useDataContext } from '../Context/DataProvider';
 
 import PostCard from './PostCard';
 import CreatePost from './CreatePost';
 export default function Posts() {
+  
   const [allPosts, loading] = AllPosts();
    const {postForm, setPostForm} = useDataContext();
   //  const navigate=useNavigate();

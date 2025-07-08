@@ -8,14 +8,10 @@ module.exports.check=async(req,res)=>{
 }
 
 module.exports.createPost=async(req,res)=>{
-    // const {token}=req.body;
-//    console.log((req.body.body))
-//    console.log(req.file)
     try {
         const user=req.user;
         if(!user)   return res.status(400).json({msg:" user not found",success:false})
 
-        // console.log(req.file)
         const newPost = new Post({
       userId: user._id,
       body: req.body.body,
@@ -86,7 +82,6 @@ module.exports.editPost=async(req,res)=>{
 
 module.exports.PostComment=async(req,res)=>{
     const {postId,comment}=req.body;
-    // console.log(req.body)
     try {
         const user =req.user;
         const userId=user._id;

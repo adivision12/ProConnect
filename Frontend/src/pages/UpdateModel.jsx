@@ -12,7 +12,7 @@ export default function UpdateModel() {
         name: authUser.user.name || "",
         bio:authUser.user.bio || ""
       });
-
+      
       const handleInputChange = (e) => {
         const { name, value, files } = e.target;
         setFormData((prev) => ({
