@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon Backend/index.js",
-    "dev": "nodemon Backend/index.js",
+     "start": "node Backend/index.js",  
+  "dev": "nodemon Backend/index.js" ,
     "build": "npm install --legacy-peer-deps && npm install --prefix Frontend && npm run build --prefix Frontend"
   },
   "author": "",
