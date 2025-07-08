@@ -18,6 +18,14 @@ require('dotenv').config();
     console.log('error in connecting to mongodb'+error);
   }
 
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    if (req.headers['x-forwarded-proto'] !== 'https') {
+      return res.redirect('https://' + req.headers.host + req.url);
+    }
+    next();
+  });
+}
 
 app.use(cors());
 app.use(express.json());
