@@ -8,7 +8,11 @@ var cors = require('cors');
 require('dotenv').config();
 
   try {
-    mongoose.connect(process.env.MONGO_URL)
+   mongoose.connect(process.env.MONGO_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  autoSelectFamily: false, // fix for IPv6 handshake issues
+})
     .then(() => console.log('Connected!'));
   } catch (error) {
     console.log('error in connecting to mongodb'+error);
