@@ -134,10 +134,10 @@ const id=authUser.user._id;
         }
          },[id])
            const {myConnections}=useConnections();
-       const acceptedConnections = myConnections.filter(
+       const acceptedConnections = myConnections?.filter(
   (conn) => conn.status_accepted === true
 );
-const connections = acceptedConnections.map(conn => {
+const connections = acceptedConnections?.map(conn => {
   const otherUser = conn.userId._id === authUser?.user._id ? conn.connectionId : conn.userId;
   return otherUser;
 });
