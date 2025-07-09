@@ -12,6 +12,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import CreatePost from '../Dashboard/CreatePost';
 import About from './About';
 import Loading from '../Dashboard/Loading';
+import { useConnections } from '../Context/ConnectionsProvider';
 
 export default function Profile() {
        const [authUser,setAuthUser]=useAuth();
