@@ -28,33 +28,7 @@ fetch("https://ipapi.co/json/")
       setLocation(data.city+" "+ data.region+ " "+data.country_name);
     });
 }, []);
-// console.log(userProfile)
 
-    useEffect(()=>{
-        if(authUser){
-             const getUserProfile=async()=>{
-            // const token=Cookies.get("jwt");
-            const token=authUser.token?authUser.token:authUser.user.token;
-            // console.log("token",token);
-            let result = await fetch(`/api/get_user_and_profile`, {
-                method: "GET",
-                Credentials:"include",
-                headers:{
-                    authorization:`Bearer ${token}`,
-                },
-                
-                body: JSON.stringify(),
-            })
-             const data = await result.json();
-            // console.log(data);
-
-            // setCurrUserProfile(data.profile);
-            // setLoading(false);
-         
-        }
-               getUserProfile();
-        }
-       },[authUser])
 
     return(
         <DataContext.Provider value={{isOpen,isOpenAbout,setIsOpenAbout,setIsOpen,location,postForm, setPostForm,openUpdateEduForm,setOpenUpdateEduForm,currUserProfile,setCurrUserProfile,userProfile,setUserProfile}}>

@@ -15,8 +15,8 @@ export default function Comment({comment}) {
       navigate("/profile")
       return;
     }
-    //  setSelected(id);
-            navigate(`/userProfile/${id}`)
+     setSelected(id);
+            navigate("/userProfile")
   }
      useEffect(() => {
   const handleOutsideClick = () => {
@@ -87,7 +87,10 @@ async function handleDeleteComment(id) {
       <div className="absolute top-full right-0 mt-1 w-40 bg-white border border-gray-300 rounded-lg shadow-lg z-40">
         {comment.userId._id === authUser.user._id ? (
           <>
-            <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">
+            <button  onClick={async()=>{
+             await navigator.clipboard.writeText(comment.body);
+    toast.success('Comment copied to clipboard!');
+          }}  className="block w-full text-left px-4 py-2 hover:bg-gray-100">
               Copy Comment
             </button>
             <button
@@ -98,7 +101,10 @@ async function handleDeleteComment(id) {
             </button>
           </>
         ) : (
-          <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">
+          <button onClick={async()=>{
+             await navigator.clipboard.writeText(comment.body);
+    toast.success('Comment copied to clipboard!');
+          }} className="block w-full text-left px-4 py-2 hover:bg-gray-100">
             Copy Comment
           </button>
         )}

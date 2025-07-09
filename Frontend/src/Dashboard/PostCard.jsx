@@ -14,6 +14,8 @@ import { useEffect } from 'react';
 import Comment from './Comment';
 import { getTimeAgo } from '../utils/getTimeAgo';
 import Loading from './Loading';
+import { useLocation } from 'react-router-dom';
+
 export default function PostCard({post}) {
       const [authUser] = useAuth();
       const [openComment,setOpenComment]=useState(false);
@@ -172,6 +174,7 @@ const likeToggle = async (id) => {
     });
 
     const data = await response.json();
+    console.log(isLiked);
 
     if (data.success) {
       setIsLiked((prev) => !prev);
@@ -184,6 +187,28 @@ const likeToggle = async (id) => {
     toast.error("Something went wrong");
   }
 };
+const handleCopyLink = async (postId, userId) => {
+  const postUrl = `${window.location.origin}/userProfile/${userId}/posts?postId=${postId}`;
+
+  try {
+    await navigator.clipboard.writeText(postUrl);
+    toast.success('Post link copied to clipboard!');
+  } catch (error) {
+    toast.error('Failed to copy link');
+    console.error(error);
+  }
+};
+useEffect(() => {
+  const params = new URLSearchParams(location.search);
+  const targetPostId = params.get('postId');
+
+  if (targetPostId) {
+    const el = document.getElementById(`post-${targetPostId}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+}, []);
 
   return (
     <div 
@@ -192,7 +217,7 @@ const likeToggle = async (id) => {
    >
       {/* Header */}
       {isLoading && <Loading/>}
-      <div   className="flex items-start px-6 py-4">
+      <div  id={`post-${post._id}`} className="flex items-start px-6 py-4">
         <img
           onClick={() => onPostClick(post.userId._id)} src={post.userId.profilePicture}
           alt="Profile"
@@ -238,7 +263,7 @@ const likeToggle = async (id) => {
         🗑️ Delete Post
       </button>
     </div>: <div  className="absolute right-0 mt-2 w-40 bg-white border border-gray-300 rounded-lg shadow-lg z-50">
- <button
+ <button onClick={() => handleCopyLink(post._id, post.userId._id)}
         className="block w-full text-left px-4 py-2 hover:bg-gray-100"
       >
         Copy post link
