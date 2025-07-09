@@ -152,23 +152,39 @@ export default function PostCard({post}) {
 
   
   const [isLiked,setIsLiked]=useState(false);
-  const likeToggle=async(id)=>{
-    const token=authUser.token?authUser.token:authUser.user.token;
-    // console.log(id);
-     const response = await fetch("/api/increment_likes", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                 authorization:`Bearer ${token}`,
-            },
-            body: JSON.stringify({id}),
-        })
-        
-        const data = await response.json();
-        console.log(data);
-        setIsLiked(data.success);
+  const [likesCount, setLikesCount] = useState(post.likes?.length || 0);
+
+useEffect(() => {
+  setIsLiked(post.likes?.includes(authUser.user._id));
+}, [post.likes, authUser.user._id]);
+
+const likeToggle = async (id) => {
+  const token = authUser.token || authUser.user.token;
+
+  try {
+    const response = await fetch("/api/increment_likes", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ id }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      setIsLiked((prev) => !prev);
+      setLikesCount((prev) => (isLiked ? prev - 1 : prev + 1));
+    } else {
+      toast.error("Failed to like post");
+    }
+  } catch (error) {
+    console.error("Error liking post:", error);
+    toast.error("Something went wrong");
   }
-// console.log(open2)
+};
+
   return (
     <div 
       
@@ -318,8 +334,8 @@ export default function PostCard({post}) {
       {/* Reactions */}
       <div className="px-6 py-2 flex items-center justify-between text-gray-600 text-sm">
         <div className="flex items-center space-x-1">
-          <FaThumbsUp className="text-blue-600" />
-          <span>{isLiked  ? (post.likes?post.likes.length+1:1):post.likes?post.likes.length:0}</span>
+         <FaThumbsUp className={`${isLiked ? 'text-blue-600' : ''}`} />
+<span>{likesCount}</span>
         </div>
         {/* Could show comment count, share count here */}
         {postComments.length>0 && <div onClick={()=>setOpenComment(true)} className=' cursor-pointer'> {postComments.length} 
@@ -331,7 +347,7 @@ export default function PostCard({post}) {
       {/* Actions */}
       <div className="px-6 py-2 flex justify-between text-gray-600">
         <button onClick={()=>likeToggle(post._id)}  className="flex items-center space-x-2 hover:bg-gray-100 px-2 py-1 rounded w-full justify-center">
-          <FaThumbsUp className={` ${isLiked || post.likes.includes(authUser.user._id) ?'text-blue-600':''}`} />
+         <FaThumbsUp className={isLiked ? 'text-blue-600' : ''} />
           <span className={`text-sm`} >Like</span>
         </button>
         <button onClick={()=>setOpenComment(true)} className="flex items-center space-x-2 hover:bg-gray-100 px-2 py-1 rounded w-full justify-center">

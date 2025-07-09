@@ -21,11 +21,11 @@ const [postForm, setPostForm] = useState(false);
   const user = authUser?.user;
   
 useEffect(() => {
-  fetch('http://ip-api.com/json/')
+fetch("https://ipapi.co/json/")
     .then(res => res.json())
     .then(data => {
     //   console.log("User is from:", data.city, data.regionName, data.country);
-      setLocation(data.city+" "+ data.regionName+ " "+data.country);
+      setLocation(data.city+" "+ data.region+ " "+data.country_name);
     });
 }, []);
 // console.log(userProfile)

@@ -15,8 +15,8 @@ export default function Comment({comment}) {
       navigate("/profile")
       return;
     }
-     setSelected(id);
-            navigate("/userProfile")
+    //  setSelected(id);
+            navigate(`/userProfile/${id}`)
   }
      useEffect(() => {
   const handleOutsideClick = () => {

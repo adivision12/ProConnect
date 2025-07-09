@@ -166,7 +166,7 @@ module.exports.incrementLikes=async(req,res)=>{
     }
         await post.save();
 
-        res.json({msg:"Post liked",success:idx === -1,})
+        res.json({msg:"Post liked",success:true})
 
     } catch (err) {
         return res.status(500).json({msg:err.message,success:false});   
