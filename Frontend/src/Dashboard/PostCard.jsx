@@ -213,7 +213,7 @@ useEffect(() => {
   return (
     <div 
       
-      className="bg-white border border-gray-200 rounded-lg shadow-sm m-6 overflow-hidden"
+      className="bg-white border border-gray-200 rounded-lg shadow-sm m-2 md:m-6 overflow-hidden"
    >
       {/* Header */}
       {isLoading && <Loading/>}
@@ -390,7 +390,7 @@ useEffect(() => {
         /> &nbsp;&nbsp;
     
          <form onSubmit={handleComment} className='w-[85%] border-gray-500 h-12 border-2 rounded-full  my-2'>
-<input onChange={handleInput} type="text" placeholder='Add a comment' className='w-[90%] mt-1 outline-none rounded-full px-2' />
+<input onChange={handleInput} type="text" placeholder='Add a comment' className='w-[80%] md:w-[90%] mt-1 outline-none rounded-full px-2' />
        <button> <i  className="fa-solid fa-paper-plane text-2xl cursor-pointer"></i></button>
         </form>
        

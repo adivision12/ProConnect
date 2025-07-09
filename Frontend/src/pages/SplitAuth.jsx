@@ -63,7 +63,7 @@ export default function SplitAuth() {
       {/* Navbar */}
       <div className="absolute top-0 left-0 w-full flex justify-between items-center px-6 py-4 bg-white shadow">
         <h1 className="text-2xl font-bold text-blue-700"> <img src={logo} alt="ProConnect Logo" className="h-12" /></h1>
-        <button   onClick={() => setIsLogin(!isLogin)} className="bg-red-600 text-white text-xl px-6 py-1 rounded-full shadow hover:bg-red-700">
+        <button   onClick={() => setIsLogin(!isLogin)} className="bg-red-600 text-white text-sm md:text-lg px-2 md:px-6 py-1 rounded-full shadow hover:bg-red-700">
           Be a part
         </button>
       </div>
