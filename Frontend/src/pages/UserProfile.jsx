@@ -20,6 +20,7 @@ export default function UserProfile() {
  
 const { id } = useParams();
    const {connectionRequests,myConnections} =useConnections(); 
+   const [allConnections,setAllConnectons]=useState();
        const [authUser,setAuthUser]=useAuth();
        const [allPosts, loading] = AllPosts();
        const {setShowAllPosts, currUserProfile,setCurrUserProfile} = useDataContext();
@@ -190,15 +191,38 @@ const openPosts=(id2)=>{
       }
         
       // console.log(selected)
-   
-      
+      useEffect(() => {
+  async function fetchData() {
+    // You can await here
+     const response = await fetch("/api/user/getAll_Connections", {
+            method: "GET",
+            headers: {
+               'Content-Type': 'application/json',
+            },
+        })
+        
+        const data = await response.json();
+        // console.log(data);
+        setAllConnectons(data.allConnections);
+  }
+  fetchData();
+}, []);
+    
+          const acceptedConnections = allConnections?.filter(
+     (conn) => conn.status_accepted === true
+   );
+  //  console.log(acceptedConnections)
+   const connections = acceptedConnections?.filter(conn => 
+  conn.userId._id === id || conn.connectionId._id === id
+);
+      // console.log(connections)
   return (
    <div className="bg-gray-100 font-sans">
 
   <NavBar/>
   <div className="max-w-6xl mx-auto p-6">
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-      <aside className="hidden lg:block bg-white p-4 rounded-xl shadow col-span-1">
+      <aside className="bg-white p-4 rounded-xl shadow col-span-1">
         <h3 className="font-semibold mb-2">Open to work</h3>
         <p className="text-sm text-gray-600 mb-1">Unemployed roles</p>
         <a href="#" className="text-blue-600 text-sm">Show details</a>
@@ -225,7 +249,8 @@ const openPosts=(id2)=>{
           <p>
            {currUserProfile?currUserProfile.userId.bio:''}
           </p>
-          <p className="text-sm text-gray-500 mt-1">Kanpur, Uttar Pradesh, India • 369 connections</p>
+          <p className="text-sm text-gray-500 mt-1">Kanpur, Uttar Pradesh, India </p>
+          <p className="text-sm text-blue-500 font-semibold mt-1"> {connections?.length} Connections</p>
          <div className="mt-4 flex flex-wrap gap-2">
  { isWithdraw && <button
       onClick={() => sendConnectionReq(currUserProfile.userId._id)}
@@ -291,7 +316,7 @@ const openPosts=(id2)=>{
         </div>
       </div>
 
-      <aside className="hidden lg:block bg-white p-4 rounded-xl shadow col-span-1">
+      <aside className="bg-white p-4 rounded-xl shadow col-span-1">
         <h4 className="font-semibold mb-2 text-sm">Promoted</h4>
         <div className="border p-3 rounded-lg">
           <p className="text-sm font-semibold">Mount Roofing &amp; Structure</p>

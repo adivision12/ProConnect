@@ -247,6 +247,17 @@ module.exports.getMyConnections=async(req,res)=>{
     }
 }
 
+module.exports.getAllConnections=async(req,res)=>{
+    try {
+            const allConnections=await Connection.find()
+            .populate('userId connectionId','name email bio profilePicture') 
+
+            return res.json({allConnections,success:true}); 
+    } catch (err) {
+        return res.status(500).json({msg:err.message,success:false})
+    }
+}
+
 module.exports.acceptConnectionReq=async(req,res)=>{
     const {requestId,action}=req.body;
     try {

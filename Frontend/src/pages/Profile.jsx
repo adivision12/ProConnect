@@ -132,7 +132,14 @@ const id=authUser.user._id;
                  getUserProfile();
         }
          },[id])
-        
+           const {myConnections}=useConnections();
+       const acceptedConnections = myConnections.filter(
+  (conn) => conn.status_accepted === true
+);
+const connections = acceptedConnections.map(conn => {
+  const otherUser = conn.userId._id === authUser?.user._id ? conn.connectionId : conn.userId;
+  return otherUser;
+});
       //  console.log(currUserProfile)
   return (
 //    
@@ -181,7 +188,7 @@ const id=authUser.user._id;
            {authUser.user.bio}
           </p>
           <p className="text-sm text-gray-500 mt-1">{location ||"No location avl"}</p>
-          <p className="text-sm text-blue-500 mt-1 font-semibold"> 369 connections</p>
+          <p className="text-sm text-blue-500 mt-1 font-semibold"> {connections?.length} connections</p>
           <div className="mt-4 flex flex-wrap gap-2">
             <button className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm">Open to</button>
            <a href="#enhanceProfile"> <button className="border border-gray-400 px-4 py-2 rounded-full text-sm">Enhance profile</button></a>

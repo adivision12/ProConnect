@@ -1,5 +1,5 @@
 const express=require("express");
-const { activeCheck, register, login, profilePicture, updateUserProfile, getUserAndProfile, getAllUserProfile, sendConnectionReq, getMyConnectionReq, getMyConnections, acceptConnectionReq, getProfile, updateProfileDetails, withdrawConnectionReq, getSearchUsers, removeConnection } = require("../Controllers/userController.js");
+const { activeCheck, register, login, profilePicture, updateUserProfile, getUserAndProfile, getAllUserProfile, sendConnectionReq, getMyConnectionReq, getMyConnections, acceptConnectionReq, getProfile, updateProfileDetails, withdrawConnectionReq, getSearchUsers, removeConnection, getAllConnections } = require("../Controllers/userController.js");
 
 const router=express.Router();
 const { secureRoute } = require("../Middleware/middleware.js");
@@ -26,6 +26,7 @@ router.route("/api/user/getAllUsers").get(secureRoute,getAllUserProfile);
 router.route("/api/user/send_Connection_req").post(secureRoute,sendConnectionReq);
 router.route("/api/user/get_my_Connection_req").get(secureRoute,getMyConnectionReq);
 router.route("/api/user/getMyAll_Connections").get(secureRoute,getMyConnections);
+router.route("/api/user/getAll_Connections").get(getAllConnections);
 router.route("/api/user/accept_connection_req").post(secureRoute,acceptConnectionReq);
 router.route("/api/user/withdraw_connection_req").post(secureRoute,withdrawConnectionReq);
 router.route("/api/user/removeConnection").post(secureRoute,removeConnection);
