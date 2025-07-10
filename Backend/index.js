@@ -31,7 +31,15 @@ app.use(cors());
 app.use(express.json());
 
 const helmet = require('helmet');
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    useDefaults: true,
+    directives: {
+      "img-src": ["'self'", "data:", "https:", "https://res.cloudinary.com"],
+      "connect-src": ["'self'", "https://ipapi.co", "https://api.cloudinary.com"],
+    }
+  }
+}));
 
 app.use(userRoutes);
 app.use(postRoutes);
