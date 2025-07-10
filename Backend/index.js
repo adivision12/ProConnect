@@ -10,8 +10,8 @@ require('dotenv').config();
   try {
    mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
-  autoSelectFamily: false, // fix for IPv6 handshake issues
+ useUnifiedTopology: true,
+  tls: true,
 })
     .then(() => console.log('Connected!'));
   } catch (error) {
