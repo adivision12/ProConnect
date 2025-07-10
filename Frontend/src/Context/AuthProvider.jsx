@@ -6,6 +6,12 @@ export default function AuthProvider({ children }) {
     const initialUserState = localStorage.getItem("user");
     const [authUser, setAuthUser] = useState(initialUserState ? JSON.parse(initialUserState) : undefined);
 
+    useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setAuthUser(JSON.parse(storedUser));
+    }
+  }, []);
     return (
         <AuthContext.Provider value={[ authUser, setAuthUser ]}>
             {children}

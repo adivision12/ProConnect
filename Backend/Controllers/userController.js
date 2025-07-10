@@ -9,6 +9,15 @@ module.exports.activeCheck=async (req,res) => {
     return res.status(200).json({msg:"Running"})
 }
 
+const jwt = require('jsonwebtoken');
+
+const generateToken=(id,res)=>{
+    const token= jwt.sign({id},"mysecret",{
+        expiresIn:"30d",
+    })
+    res.cookie("jwt",token);
+    return token;
+}
 module.exports.register=async(req,res)=>{
     try {
         const {name,email,password}=req.body;
@@ -52,7 +61,7 @@ module.exports.login=async(req,res)=>{
 
         if(!isMatch)   return res.status(400).json({msg:"Invalid details",success:false})
 
-        const token=crypto.randomBytes(32).toString("hex");
+        const token=generateToken(user._id,res);
 
        await User.updateOne({_id:user._id},{token});
 
@@ -109,7 +118,7 @@ module.exports.getUserAndProfile=async(req,res)=>{
         if(!user)   return res.status(400).json({msg:"User not found",success:false})
             // console.log(user)
         const userProfile=await Profile.findOne({userId:user._id})
-           .populate('userId','name email bio username profilePicture')    
+           .populate('userId','name email bio  profilePicture')    
 
         return res.json({"profile":userProfile,success:true}); 
     } catch (err) {
@@ -133,36 +142,7 @@ module.exports.getProfile=async(req,res)=>{
     }
 }
 
-// module.exports.updateProfileData=async(req,res)=>{
-//     const {...updatedData}=req.body;
-//     // console.log(req.body);
-//     try {
-//         const user=req.user;
-//         if(!user)   return res.status(400).json({msg:"User not found",success:false})
 
-//             const profileToUpdate=await Profile.findOne({userId:user._id});
-
-            
-//             if(profileToUpdate.education.length>0 && updatedData.education){
-//                 profileToUpdate.education.push(updatedData.education);
-//                 const updated= await profileToUpdate.save();
-//             // console.log(updated)
-//             return res.json({msg:"profile updated ",success:true}); 
-//             }
-//             if(profileToUpdate.pastWork.length>0 && updatedData.pastWork){
-//                 profileToUpdate.pastWork.push(updatedData.pastWork);
-//                 const updated= await profileToUpdate.save();
-//             // console.log(updated)
-//             return res.json({msg:"profile updated ",success:true}); 
-//             }
-//             Object.assign(profileToUpdate,updatedData);
-//            const updated= await profileToUpdate.save();
-//             // console.log(updated)
-//             return res.json({msg:"profile updated ",success:true}); 
-//     } catch (err) {
-//         return res.status(500).json({msg:err.message,success:false})
-//     }
-// }
 
 module.exports.updateProfileDetails=async(req,res)=>{
     // console.log(req.body);
@@ -183,8 +163,10 @@ module.exports.updateProfileDetails=async(req,res)=>{
 module.exports.getAllUserProfile=async(req,res)=>{
     try {
         const user=req.user;
-        const allUsers=await Profile.find({userId:{$ne:user._id}}).populate('userId','name bio email username profilePicture') 
-        // console.log(allUsers)
+         if(!user)   return res.status(400).json({msg:"User not found",success:false})
+
+        const allUsers=await Profile.find({userId:{$ne:user._id}}).populate('userId','name bio email profilePicture') 
+        console.log(allUsers)
         return res.json({allUsers,success:false});
     } catch (err) {
         return res.status(500).json({msg:err.message,success:false})
