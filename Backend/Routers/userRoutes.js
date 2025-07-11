@@ -10,7 +10,7 @@ const User = require("../Models/UserModel.js");
   const upload = multer({ storage: storage })
 
 
-router.route('/check_Token').post(secureRoute,checkToken);
+router.route('/api/check_Token').post(secureRoute,checkToken);
 
 router.route('/api/register').post(register);
 router.route('/api/login').post(login);
