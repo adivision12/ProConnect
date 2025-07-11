@@ -1,5 +1,5 @@
 const express=require("express");
-const { activeCheck, register, login, profilePicture, updateUserProfile, getUserAndProfile, getAllUserProfile, sendConnectionReq, getMyConnectionReq, getMyConnections, acceptConnectionReq, getProfile, updateProfileDetails, withdrawConnectionReq, getSearchUsers, removeConnection, getAllConnections } = require("../Controllers/userController.js");
+const { activeCheck, register, login, profilePicture, updateUserProfile, getUserAndProfile, getAllUserProfile, sendConnectionReq, getMyConnectionReq, getMyConnections, acceptConnectionReq, getProfile, updateProfileDetails, withdrawConnectionReq, getSearchUsers, removeConnection, getAllConnections, checkToken } = require("../Controllers/userController.js");
 
 const router=express.Router();
 const { secureRoute } = require("../Middleware/middleware.js");
