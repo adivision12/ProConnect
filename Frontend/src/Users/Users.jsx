@@ -16,7 +16,7 @@ export default function AllUsers() {
     const getAllUsers = async () => {
       // if (!token) return;
 
-      console.log(token)
+      // console.log(token)
       try {
         const result = await fetch(`/api/user/getAllUsers?id=${authUser?.user._id}`, {
           method: "GET",

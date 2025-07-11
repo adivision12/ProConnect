@@ -1,50 +1,61 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDataContext } from '../Context/DataProvider'; // Assuming user data is from context
+import { Link } from 'react-router-dom';
+import AllUsers from '../Users/Users';
 
-export const AuthContext = createContext();
+const SearchUser = () => {
+    const [allUsers]=AllUsers();// allUsers should be fetched from DB
+  const [search, setSearch] = useState('');
+  const [results, setResults] = useState([]);
 
-export default function AuthProvider({ children }) {
-    const initialUserState = localStorage.getItem("auth");
-    const [authUser, setAuthUser] = useState(initialUserState ? JSON.parse(initialUserState) : undefined);
+//   console.log(allUsers)
+  useEffect(() => {
+    if (search.trim() === '') {
+      setResults([]);
+      return;
+    }
 
-    const token = authUser?.token || authUser?.user?.token;
-
-    useEffect(() => {
-        const verifyToken = async () => {
-            try {
-                if (token) {
-                    const result = await fetch("/api/check_Token", {
-                        method: "POST",
-                        credentials: "include",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`,
-                        },
-                        body: JSON.stringify({}) // you can pass data if needed
-                    });
-
-                    const data = await result.json();
-
-                    if (!data.success) {
-                        // token invalid or expired
-                        localStorage.removeItem("auth");
-                        setAuthUser(undefined);
-                    }
-                }
-            } catch (err) {
-                console.error("Token check failed:", err);
-                localStorage.removeItem("auth");
-                setAuthUser(undefined);
-            }
-        };
-
-        verifyToken();
-    }, [token]);
-
-    return (
-        <AuthContext.Provider value={[authUser, setAuthUser]}>
-            {children}
-        </AuthContext.Provider>
+    const filtered = allUsers.filter(user =>
+      user.userId.name.toLowerCase().includes(search.toLowerCase())
     );
-}
+    setResults(filtered);
+  }, [search, allUsers]);
 
-export const useAuth = () => useContext(AuthContext);
+  // console.log(results)
+  return (
+    <div className="relative w-full max-w-md mx-auto">
+      <input
+        type="text"
+        placeholder="Search..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="w-full px-4 py-2 rounded-full border shadow focus:outline-none"
+      />
+
+      {search && results.length > 0 && (
+        <div className="absolute z-50 w-full bg-white border shadow-lg mt-1 rounded-md max-h-60 overflow-y-auto">
+          {results.map(user => (
+            <Link
+              to={`/userProfile/${user.userId._id}`}
+              key={user._id}
+              onClick={() => setSearch('')}
+              className="flex items-center gap-3 p-2 hover:bg-gray-100 transition"
+            >
+              <img
+                src={user.userId.profilePicture || "/default-avatar.png" }
+                alt="dp"
+                className="w-8 h-8 rounded-full object-cover"
+              />
+              <div>
+                <p className="text-sm font-medium">{user.userId.name}</p>
+                <p className="text-xs text-gray-500">{user.userId.bio}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default SearchUser;
