@@ -10,7 +10,7 @@ export default function Users() {
   const [authUser] = useAuth();
   const navigate = useNavigate();
   const { selected, setSelected } = useController();
-
+  
   const clickUser = (id) => {
     if (id === authUser?.user?._id) {
       navigate('/profile');

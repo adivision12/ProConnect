@@ -166,7 +166,7 @@ module.exports.getAllUserProfile=async(req,res)=>{
         //  if(!user)   return res.status(400).json({msg:"User not found",success:false})
 
         const allUsers=await Profile.find().populate('userId','name bio email profilePicture') 
-        console.log(allUsers)
+        // console.log(allUsers)
         return res.json({allUsers,success:false});
     } catch (err) {
         return res.status(500).json({msg:err.message,success:false})

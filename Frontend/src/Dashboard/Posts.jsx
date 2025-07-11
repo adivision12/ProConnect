@@ -16,7 +16,7 @@ export default function Posts() {
     <div className="w-[95%] lg:w-[50%] mx-auto h-screen overflow-scroll scrollbar-hide">
       {/* Create Post Input Box */}
      
-      <div className="border-2 p-6 bg-white m-6 rounded-lg">
+      <div className="border-2 p-6 bg-white m-2 lg:m-6 rounded-lg">
         <div className="flex items-center space-x-4">
           <img
             src={authUser.user.profilePicture}

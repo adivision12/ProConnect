@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useDataContext } from '../Context/DataProvider'; // Assuming user data is from context
 import { Link } from 'react-router-dom';
 import AllUsers from '../Users/Users';
+import { useAuth } from '../Context/AuthProvider';
 
 const SearchUser = () => {
     const [allUsers]=AllUsers();// allUsers should be fetched from DB
+    const [authUser]=useAuth();
   const [search, setSearch] = useState('');
   const [results, setResults] = useState([]);
 
