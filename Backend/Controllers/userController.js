@@ -18,6 +18,20 @@ const generateToken=(id,res)=>{
     res.cookie("jwt",token);
     return token;
 }
+
+module.exports.checkToken=async (req,res) => {
+    try {
+        if(req.user){
+                    return res.status(200).json({msg:"Valid token",user:req.user,success:true})
+        }
+                return res.status(200).json({msg:"Invalid token",success:false})
+
+    } catch (err) {
+     return res.status(500).json({msg:err.message,success:false})
+
+    }
+    return res.status(200).json({msg:"Running"})
+}
 module.exports.register=async(req,res)=>{
     try {
         const {name,email,password}=req.body;
@@ -162,10 +176,10 @@ module.exports.updateProfileDetails=async(req,res)=>{
 }
 module.exports.getAllUserProfile=async(req,res)=>{
     try {
-        // const user=req.user;
-        //  if(!user)   return res.status(400).json({msg:"User not found",success:false})
+        const user=req.user;
+         if(!user)   return res.status(400).json({msg:"User not found",success:false})
 
-        const allUsers=await Profile.find().populate('userId','name bio email profilePicture') 
+        const allUsers=await Profile.find({userId:{$ne:user._id}}).populate('userId','name bio email profilePicture') 
         // console.log(allUsers)
         return res.json({allUsers,success:false});
     } catch (err) {

@@ -10,6 +10,7 @@ const User = require("../Models/UserModel.js");
   const upload = multer({ storage: storage })
 
 
+router.route('/check_Token').post(secureRoute,checkToken);
 
 router.route('/api/register').post(register);
 router.route('/api/login').post(login);
@@ -18,7 +19,7 @@ router.route('/api/upload_Profile').post(  upload.fields([
     { name: 'coverPicture', maxCount: 1 }, 
   ]),secureRoute,profilePicture)
 router.route("/api/get_user_and_profile").get(secureRoute,getUserAndProfile)    
-router.route("/api/getProfile").get(getProfile)    
+router.route("/api/getProfile").get(secureRoute,getProfile)    
 router.route("/api/update_UserProfile").post(secureRoute,updateUserProfile)
 // router.route("/api/update_Profile_Data").post(secureRoute,updateProfileData);
 router.route("/api/update_Profile_Details").post(secureRoute,updateProfileDetails);
