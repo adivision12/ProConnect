@@ -18,19 +18,23 @@ export default function Users() {
       navigate(`/userProfile/${id}`);
     }
   };
-
+ const users=allUsers?.filter((user)=>{
+  if(authUser?.user._id != user._id){
+    return user;
+  }
+ })
   return (
     <div className="hidden lg:block lg:w-[25%] border-2 p-6 bg-white m-6 rounded-lg shadow">
       <h1 className="text-xl font-bold mb-4">Suggested Users</h1>
 
       {loading && <p className="text-gray-500">Loading...</p>}
 
-      {!loading && allUsers?.length === 0 && (
+      {!loading && users?.length === 0 && (
         <p className="text-gray-500">No users found</p>
       )}
 
       {!loading &&
-        allUsers?.slice(0, 5).map((userObj) => {
+        users?.slice(0, 5).map((userObj) => {
           const user = userObj.userId;
           if (!user) return null;
 

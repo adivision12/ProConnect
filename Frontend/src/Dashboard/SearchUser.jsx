@@ -9,17 +9,22 @@ const SearchUser = () => {
   const [results, setResults] = useState([]);
 
 //   console.log(allUsers)
+ const users=allUsers?.filter((user)=>{
+  if(authUser?.user._id != user._id){
+    return user;
+  }
+ })
   useEffect(() => {
     if (search.trim() === '') {
       setResults([]);
       return;
     }
 
-    const filtered = allUsers.filter(user =>
+    const filtered = users.filter(user =>
       user.userId.name.toLowerCase().includes(search.toLowerCase())
     );
     setResults(filtered);
-  }, [search, allUsers]);
+  }, [search, users]);
 
   // console.log(results)
   return (

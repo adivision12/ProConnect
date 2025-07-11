@@ -44,8 +44,8 @@ export default function UpdateModel() {
   ...data
 }));
 
-localStorage.setItem("user", JSON.stringify({
-  ...JSON.parse(localStorage.getItem("user")),
+localStorage.setItem("auth", JSON.stringify({
+  ...JSON.parse(localStorage.getItem("auth")),
   ...data
 }));
          toast.success("Details Updated")

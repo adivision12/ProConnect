@@ -37,7 +37,7 @@ export default function NavBar() {
   }
   function signOut(){
     // console.log("sign out")
-    localStorage.removeItem('user');
+    localStorage.removeItem('auth');
     toast.success("Sign Out successfully")
     setTimeout(()=>{
       window.location.reload();

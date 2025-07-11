@@ -43,7 +43,7 @@ export default function SplitAuth() {
       if (data.success) {
         if (isLogin) {
           setAuthUser(data);
-          localStorage.setItem("user", JSON.stringify(data));
+          localStorage.setItem("auth", JSON.stringify(data));
           toast.success("Login successful!");
           setTimeout(() => navigate("/dashboard"), 200);
         } else {

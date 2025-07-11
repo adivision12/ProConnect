@@ -10,7 +10,7 @@ export default function AllUsers() {
   useEffect(() => {
     const token =
       authUser?.token ||
-      (localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).token : null) ||
+      (localStorage.getItem("auth") ? JSON.parse(localStorage.getItem("auth")).token : null) ||
       authUser?.user?.token;
 
     const getAllUsers = async () => {
