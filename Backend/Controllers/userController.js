@@ -28,9 +28,7 @@ module.exports.checkToken=async (req,res) => {
 
     } catch (err) {
      return res.status(500).json({msg:err.message,success:false})
-
     }
-    return res.status(200).json({msg:"Running"})
 }
 module.exports.register=async(req,res)=>{
     try {
@@ -174,18 +172,23 @@ module.exports.updateProfileDetails=async(req,res)=>{
          return res.status(500).json({msg:err.message,success:false})
     }
 }
-module.exports.getAllUserProfile=async(req,res)=>{
+module.exports.getAllUserProfile = async (req, res) => {
     try {
-        const user=req.user;
-         if(!user)   return res.status(400).json({msg:"User not found",success:false})
+        const user = req.user;
+        const id = req.query.id; // optional ID to exclude
 
-        const allUsers=await Profile.find({userId:{$ne:user._id}}).populate('userId','name bio email profilePicture') 
-        // console.log(allUsers)
-        return res.json({allUsers,success:false});
+        const excludeIds = [user._id];
+        if (id) excludeIds.push(id);
+
+        const allUsers = await Profile.find({ userId: { $nin: excludeIds } })
+            .populate('userId', 'name bio email profilePicture');
+
+        return res.json({ allUsers, success: true });
     } catch (err) {
-        return res.status(500).json({msg:err.message,success:false})
+        return res.status(500).json({ msg: err.message, success: false });
     }
-}
+};
+
 
 module.exports.sendConnectionReq=async(req,res)=>{
     const {connectionId}=req.body;

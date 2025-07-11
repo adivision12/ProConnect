@@ -23,7 +23,7 @@ router.route("/api/getProfile").get(secureRoute,getProfile)
 router.route("/api/update_UserProfile").post(secureRoute,updateUserProfile)
 // router.route("/api/update_Profile_Data").post(secureRoute,updateProfileData);
 router.route("/api/update_Profile_Details").post(secureRoute,updateProfileDetails);
-router.route("/api/user/getAllUsers").get(getAllUserProfile);
+router.route("/api/user/getAllUsers").get(secureRoute,getAllUserProfile);
 router.route("/api/user/send_Connection_req").post(secureRoute,sendConnectionReq);
 router.route("/api/user/get_my_Connection_req").get(secureRoute,getMyConnectionReq);
 router.route("/api/user/getMyAll_Connections").get(secureRoute,getMyConnections);

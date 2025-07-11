@@ -14,10 +14,11 @@ export default function AllUsers() {
       authUser?.user?.token;
 
     const getAllUsers = async () => {
-      if (!token) return;
+      // if (!token) return;
 
+      console.log(token)
       try {
-        const result = await fetch("/api/user/getAllUsers", {
+        const result = await fetch(`/api/user/getAllUsers?id=${authUser?.user._id}`, {
           method: "GET",
           credentials: "include",
           headers: {

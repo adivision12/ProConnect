@@ -13,7 +13,7 @@ module.exports.secureRoute=async(req,res,next)=>{
       
         const user=await User.findById(varified.id).select("-password");
       
-        // console.log(varified);
+        // console.log(user);
         if(!user){
             return res.json({message:"not authorized"})
         }
