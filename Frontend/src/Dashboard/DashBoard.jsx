@@ -17,7 +17,7 @@ export default function Dashboard({ posts }) {
 const {activeTab, setActiveTab} = useDataContext();
 const {passModal,setPassModal}=useDataContext();
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <div className="min-h-screen bg-gray-50  text-gray-900 00">
       {/* Navbar */}
       <NavBar/>
       {/* Main Grid */}
@@ -27,12 +27,12 @@ const {passModal,setPassModal}=useDataContext();
         <aside className="hidden md:block col-span-1 space-y-4">
           <motion.div
             whileHover={{ scale: 1.02 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl shadow p-4"
+            className="bg-white  rounded-2xl shadow p-4"
           >
             <ShortProfile user={authUser?.user} />
           </motion.div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-4">
+          <div className="bg-white  rounded-2xl shadow p-4">
             <h3 className="font-semibold mb-2">Quick Links</h3>
             <ul className="space-y-2 text-sm">
               <li onClick={()=>{setActiveTab('connections');
@@ -55,7 +55,7 @@ const {passModal,setPassModal}=useDataContext();
 
         {/* Right Sidebar */}
         <aside className="hidden md:block col-span-1 space-y-4">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-4">
+          <div className="bg-white  rounded-2xl shadow p-4">
             <h3 className="font-semibold mb-2">Trending Topics</h3>
             <ul className="space-y-2 text-sm">
               <li>#AI in Coding</li>
@@ -64,7 +64,7 @@ const {passModal,setPassModal}=useDataContext();
             </ul>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-4">
+          <div className="bg-white  rounded-2xl shadow p-4">
             <h3 className="font-semibold mb-2">Suggested Connections</h3>
             {/* <ul className="space-y-2 text-sm">
               <li className="hover:text-blue-600 cursor-pointer">Riya Sharma</li>

@@ -27,7 +27,7 @@ export default function App() {
   ];
 
   return (
-    <div className="bg-white dark:bg-gray-900 min-h-screen text-gray-900 dark:text-gray-100 font-sans">
+    <div className="bg-white 0 min-h-screen text-gray-900 100 font-sans">
       {/* Navbar */}
       <header className="w-full px-8 py-4 flex justify-between items-center shadow-md">
         <img src={logo} alt="ProConnect Logo" className="h-12" />
@@ -48,10 +48,10 @@ export default function App() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="text-3xl md:text-5xl font-bold text-gray-800 dark:text-white leading-tight mb-4">
+          <h1 className="text-3xl md:text-5xl font-bold text-gray-800  leading-tight mb-4">
             Build Networks, Not Just Profiles
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-6">
+          <p className="text-lg md:text-xl text-gray-600 300 mb-6">
             Success is best when shared — connect now. Real growth begins with real connections.
           </p>
           <motion.button
@@ -80,9 +80,9 @@ export default function App() {
       </main>
 
       {/* Features Section */}
-      <section className="bg-gray-50 dark:bg-gray-800 py-12">
+      <section className="bg-gray-50 0 py-12">
         <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12 text-gray-800 dark:text-white">
+          <h2 className="text-3xl font-bold text-center mb-12 text-gray-800 ">
             AI-Powered Features
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -91,13 +91,13 @@ export default function App() {
                 key={index}
                 whileHover={{ scale: 1.05, y: -5 }}
                 transition={{ duration: 0.3 }}
-                className="bg-white dark:bg-gray-700 rounded-2xl shadow-lg p-8 text-center hover:shadow-2xl transition duration-300"
+                className="bg-white  rounded-2xl shadow-lg p-8 text-center hover:shadow-2xl transition duration-300"
               >
                 <div className="flex justify-center mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-white">
+                <h3 className="text-xl font-semibold mb-2 text-gray-800 ">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300">{feature.desc}</p>
+                <p className="text-gray-600 ">{feature.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -105,7 +105,7 @@ export default function App() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-100 dark:bg-gray-900 py-6 mt-12 text-center text-gray-600 dark:text-gray-400">
+      <footer className="bg-gray-100 0 py-6 mt-12 text-center text-gray-600 400">
         &copy; {new Date().getFullYear()} ProConnect. All rights reserved.
       </footer>
     </div>
