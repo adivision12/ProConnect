@@ -1,20 +1,22 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../Context/AuthProvider';
-import dp from './../assets/dp.jpg'
+import dp from './../assets/dp.jpg';
 import { useNavigate } from 'react-router';
 import { useDataContext } from '../Context/DataProvider';
 import toast from 'react-hot-toast';
 import SearchUser from './SearchUser';
 import logo from "../assets/logo2.png";
+import ResetPasswordModal from '../Modals/ResetPasswordModal';
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
   const menuRef = useRef();
-   const [authUser]=useAuth();
-   const {setShowAllPosts}=useDataContext();
-   const navigate=useNavigate();
-  // close profile dropdown when clicking outside
+  const [authUser] = useAuth();
+  const { setShowAllPosts } = useDataContext();
+  const navigate = useNavigate();
+
+  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(e) {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -26,112 +28,109 @@ export default function NavBar() {
   }, []);
 
   const navItems = [
-    { name: 'Home', icon: 'house'  , onClick:()=>{navigate('/dashboard')} },
-    { name: 'MyNetwork', icon: 'users' , onClick:()=>{navigate('/network')} },
-   
+    { name: 'Home', icon: 'house', onClick: () => navigate('/dashboard') },
+    { name: 'MyNetwork', icon: 'users', onClick: () => navigate('/network') },
   ];
 
- 
-  function openPosts(id){
-    navigate(`/userProfile/${id}/posts`)
-  }
-  function signOut(){
-    // console.log("sign out")
-    localStorage.removeItem('auth');
-    toast.success("Sign Out successfully")
-    setTimeout(()=>{
-      window.location.reload();
-    },500)
+  function openPosts(id) {
+    navigate(`/userProfile/${id}/posts`);
   }
 
+  function signOut() {
+    localStorage.removeItem('user');
+    toast.success("Signed out successfully");
+    setTimeout(() => window.location.reload(), 500);
+  }
+
+  const {passModal,setPassModal}=useDataContext();
   return (
-    <nav className="bg-white shadow-sm">
+    <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          
+
           {/* Left: Logo */}
-          <div className="flex-shrink-0">
-            <h1 className="font-bold text-blue-600 text-2xl">   <img src={logo} alt="ProConnect Logo" className="h-12" /></h1>
+          <div onClick={() => navigate("/dashboard")} className="flex-shrink-0 flex items-center gap-2 cursor-pointer">
+            <img src={logo} alt="ProConnect Logo" className="h-10" />
           </div>
 
-     <div className='hidden md:flex lg:w-[50%] '>
-            <SearchUser/>
-     </div>
-          {/* </div> */}
+          {/* Center: Search */}
+          <div className="hidden md:flex w-[40%]">
+            <SearchUser />
+          </div>
 
-          {/* Right */}
-          <div className="flex items-center gap-4 space-x-4">
-            {/* Desktop Nav Icons */}
-            <div className="hidden md:flex  items-center space-x-8 text-gray-600">
+          {/* Right: Nav + Profile */}
+          <div className="flex items-center gap-6">
+
+            {/* Desktop Nav Items */}
+            <div className="hidden md:flex items-center gap-6">
               {navItems.map((item) => (
-                <div onClick={item.onClick}
+                <button
                   key={item.name}
-                  className="flex flex-col items-center text-sm  hover:text-black cursor-pointer"
+                  onClick={item.onClick}
+                  className="flex flex-col items-center text-sm text-gray-600 hover:text-blue-600 transition"
                 >
                   <i className={`fa-solid fa-${item.icon} text-lg`} />
                   <span className="mt-1">{item.name}</span>
-                </div>
+                </button>
               ))}
             </div>
 
-            {/* Profile Trigger */}
-            <div className="relative" onClick={() => setOpen((o) => !o)} ref={menuRef}>
-              <button
-                
-                className="flex flex-col items-center focus:outline-none"
-              >
-               {authUser? <img
-                  src={ authUser.user?.profilePicture}
-                  alt="Me"
-                  className="w-8 h-8 rounded-full"
-                />: <img
-                  src={dp}
-                  alt="Me"
-                  className="w-8 h-8 rounded-full"
-                />}
-                <span className="mt-1 text-sm hidden md:block">Me</span>
-              </button>
+            {/* Profile Avatar */}
+            <div className="relative" ref={menuRef}>
+              <img
+                onClick={() => setOpen((o) => !o)}
+                src={authUser?.user?.profilePicture || dp}
+                alt="Me"
+                className="h-9 w-9 rounded-full border cursor-pointer hover:ring-2 hover:ring-blue-400 transition"
+              />
 
               {/* Dropdown Panel */}
               {open && (
                 <div className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg border border-gray-200 z-50">
-                  {/* (same contents as before) */}
-                  <div className="p-4 flex items-center space-x-3">
-                                 {authUser? <img
-                  src={ authUser.user?.profilePicture}
-                  alt="Me"
-                  className="w-8 h-8 rounded-full"
-                />: <img
-                  src={dp}
-                  alt="Me"
-                  className="w-8 h-8 rounded-full"
-                />}
+                  
+                  {/* User Info */}
+                  <div className="p-4 flex items-center space-x-3 border-b border-gray-100">
+                    <img
+                      src={authUser?.user?.profilePicture || dp}
+                      alt="Me"
+                      className="w-10 h-10 rounded-full"
+                    />
                     <div className="flex-1">
-                      <p className="font-medium">{authUser.user.name}</p>
-                      <p className="text-xs text-gray-500">
-                       {authUser.user.bio}
-                      </p>
+                      <p className="font-medium">{authUser?.user?.name}</p>
+                      <p className="text-xs text-gray-500">{authUser?.user?.bio}</p>
                     </div>
                   </div>
-                  <div className="px-4 space-y-2">
-                    <button onClick={()=>{navigate('/profile')}} className="w-full text-left text-sm py-1 px-2 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50">
+
+                  {/* Actions */}
+                  <div className="px-4 py-2 space-y-2">
+                    <button
+                      onClick={() => { navigate('/profile'); setOpen(false); }}
+                      className="w-full text-left text-sm py-1 px-2 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50"
+                    >
                       View Profile
                     </button>
-                  
-                  </div>
-                 
-                  <hr className="my-3" />
-                  <div className="px-4 space-y-1 text-sm">
-                    <p className="font-medium text-gray-700">Manage</p>
-                    <a onClick={()=>openPosts(authUser.user._id)} className="block hover:underline text-gray-600">
+                    <button
+                      onClick={() => { openPosts(authUser.user._id); setOpen(false); }}
+                      className="w-full text-left text-sm py-1 hover:bg-gray-100 rounded"
+                    >
                       Posts & Activity
-                    </a>
-                    <a href="#jobs" className="block hover:underline text-gray-600">
-                      Job Posting Account
-                    </a>
+                    </button>
+                    <button
+                      onClick={()=>{setPassModal(true); setOpen(false);}}
+                      className="w-full text-left text-sm py-1 hover:bg-gray-100 rounded"
+                    >
+                      Reset Password
+                    </button>
+                  </div>
+
+             
+                  <hr className="my-2" />
+
+                  {/* Sign Out */}
+                  <div className="px-4 py-2">
                     <button
                       className="w-full text-left text-sm py-1 hover:bg-gray-100 rounded"
-                      onClick={() => {signOut()}}
+                      onClick={signOut}
                     >
                       Sign Out
                     </button>
@@ -140,7 +139,7 @@ export default function NavBar() {
               )}
             </div>
 
-            {/* Mobile menu button */}
+            {/* Mobile menu toggle */}
             <button
               className="md:hidden p-2 rounded-md focus:outline-none focus:ring"
               onClick={() => setMobileMenu((m) => !m)}
@@ -153,31 +152,27 @@ export default function NavBar() {
 
       {/* Mobile Menu Panel */}
       {mobileMenu && (
-       <> 
-          <SearchUser/>
-          
-        <div className="md:hidden bg-white border-t border-gray-200">
-          <div className="px-4 py-2 space-y-1">
-            {navItems.map((item) => (
-              <a
-                key={item.name}
-                onClick={item.onClick}
-                className="flex items-center px-2 py-2 text-gray-700 hover:bg-gray-100 rounded"
-              >
-                <i className={`fa-solid fa-${item.icon} w-6`} />
-                <span className="ml-2">{item.name}</span>
-              </a>
-            ))}
-            <a
-              href="#profile"
-              onClick={() => { setOpen(true); setMobileMenu(false); }}
-              className="flex items-center px-2 py-2 text-gray-700 hover:bg-gray-100 rounded"
+        <div className="md:hidden bg-white border-t border-gray-200 px-4 py-2 space-y-2">
+          <SearchUser />
+          {navItems.map((item) => (
+            <button
+              key={item.name}
+              onClick={() => { item.onClick(); setMobileMenu(false); }}
+              className="flex items-center px-2 py-2 text-gray-700 hover:bg-gray-100 rounded w-full"
             >
-              <i className="fa-solid fa-user w-6" />
-              <span className="ml-2">Profile</span>
-            </a> 
-          </div> 
-        </div> </>
+              <i className={`fa-solid fa-${item.icon} w-6`} />
+              <span className="ml-2">{item.name}</span>
+            </button>
+          ))}
+
+          <button
+            onClick={() => { setOpen(true); setMobileMenu(false); }}
+            className="flex items-center px-2 py-2 text-gray-700 hover:bg-gray-100 rounded w-full"
+          >
+            <i className="fa-solid fa-user w-6" />
+            <span className="ml-2">Profile</span>
+          </button>
+        </div>
       )}
     </nav>
   );

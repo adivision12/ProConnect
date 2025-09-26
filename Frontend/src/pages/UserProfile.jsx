@@ -14,6 +14,8 @@ import PostCard from '../Dashboard/PostCard';
 import { useConnections } from '../Context/ConnectionsProvider';
 import toast from 'react-hot-toast';
  import { useParams } from 'react-router-dom';
+import LeftSidebar from './LeftSidebar';
+import RightSideBar from './RightSideBar';
 
 
 export default function UserProfile() {
@@ -23,6 +25,7 @@ const { id } = useParams();
    const [allConnections,setAllConnectons]=useState();
        const [authUser,setAuthUser]=useAuth();
        const [allPosts, loading] = AllPosts();
+       const [allUsers] = AllUsers();
        const {setShowAllPosts, currUserProfile,setCurrUserProfile} = useDataContext();
        const [tempSendReqId, setTempSendReqId] = useState(id);
 
@@ -123,8 +126,6 @@ async function sendConnectionReq(id){
                 if(!data.success){
                    toast.error(data.msg)
                 }
-                 
-
         
 }
 async function withdrawConnectionReq(){
@@ -222,16 +223,14 @@ const openPosts=(id2)=>{
   <NavBar/>
   <div className="max-w-6xl mx-auto p-6">
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-      <aside className="bg-white p-4 rounded-xl shadow col-span-1">
-        <h3 className="font-semibold mb-2">Open to work</h3>
-        <p className="text-sm text-gray-600 mb-1">Unemployed roles</p>
-        <a href="#" className="text-blue-600 text-sm">Show details</a>
-      </aside>
+           {currUserProfile && <LeftSidebar user={currUserProfile}/>}
+{/* <LeftSideBar2 isOwnProfile={false} /> */}
+
 
       <div className="bg-white rounded-xl shadow col-span-2 relative overflow-hidden">
         <div className="relative">
           
-           {currUserProfile?.coverPicture ? (<img src={currUserProfile.coverPicture}  alt="cover" className="w-full h-40 object-cover" />
+           {currUserProfile?.coverPicture ? (<img src={currUserProfile.coverPicture}  referrerPolicy="no-referrer"  alt="cover" className="w-full h-40 object-cover" />
 )           : <img src={img2} alt="cover" className="w-full h-40 object-cover" />}
           <div className="absolute left-6 -bottom-10">
             {/* <i className="fa-solid fa-plus  rounded-full p-3 hover:bg-pink-50 "></i> */}
@@ -315,18 +314,8 @@ const openPosts=(id2)=>{
 
         </div>
       </div>
-
-      <aside className="bg-white p-4 rounded-xl shadow col-span-1">
-        <h4 className="font-semibold mb-2 text-sm">Promoted</h4>
-        <div className="border p-3 rounded-lg">
-          <p className="text-sm font-semibold">Mount Roofing &amp; Structure</p>
-          <p className="text-xs text-gray-600 mt-1">
-            India’s No.1 Sandwich Puf Panel Manufacturers
-          </p>
-          <button className="mt-2 px-4 py-1 bg-blue-600 text-white text-sm rounded-full">Follow</button>
-        </div>
-      </aside>
-    </div>
+{ allUsers &&     <RightSideBar allUsers={allUsers}/>
+}    </div>
 {currUserProfile?.about && <section  className="bg-white rounded-xl shadow p-6 mt-6">
      <div className='flex justify-between'> <h2 className="text-2xl font-bold mb-4">About</h2>
    
@@ -334,12 +323,33 @@ const openPosts=(id2)=>{
       <p> {currUserProfile?.about || ""}</p>
     </section>}
   
+<section className="bg-white rounded-xl shadow p-6 mt-6">
+  <div className='flex justify-between items-center'>
+    <h2 className="text-2xl font-bold mb-4">Skills</h2>
+  </div>
+  <div className="flex flex-wrap gap-2">
+    
+    { currUserProfile?.skills && currUserProfile.skills.length > 0 ? (
+      currUserProfile.skills.map((skill, index) => (
+        <div key={index} className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold">
+          {skill}
+        </div>
+      ))
+    ) :
+    <div  className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-md font-semibold italic">
+      No skills added yet.
+      </div>}
+  </div>
+</section>
      { <section className="bg-white rounded-xl shadow p-6 mt-6">
         <h2 className="text-2xl font-bold mb-4">Posts</h2>
       {(myPosts && myPosts.length>0 )?
         <div className="space-y-6">
          
-          <PostCard post={myPosts[0]}/>
+          <div className='flex gap-4'>
+            <PostCard post={myPosts[0]}/>
+          { myPosts.length>1 && <PostCard post={myPosts[1]}/>}
+          </div>
            <div onClick={()=>openPosts(currUserProfile.userId._id)} className='cursor-pointer  hover:text-blue-600 text-center text-lg  '>
           Show All Posts  <i className=" fa-solid fa-arrow-right"></i>
         </div>
@@ -385,6 +395,25 @@ const openPosts=(id2)=>{
         
       </div>
     </section>
+
+    {/* Achievements Section */}
+{ currUserProfile?.achievements && currUserProfile.achievements.length > 0 && <section className="bg-white rounded-xl shadow p-6 mt-6 mb-12">
+  <div className='flex justify-between items-center'>
+    <h2 className="text-2xl font-bold mb-4">Achievements</h2>
+  </div>
+
+ 
+  <ul className="list-none space-y-3">
+    {currUserProfile.achievements.map((ach, index) => (
+      <li key={index} className="flex items-center gap-3 bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition">
+        <i className="fa-solid fa-award text-blue-600 text-lg"></i>
+        <span className="text-gray-700 font-medium">{ach}</span>
+      </li>
+    ))}
+  </ul>
+ 
+  
+</section>}
   </div>
 
   

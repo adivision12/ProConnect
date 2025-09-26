@@ -27,17 +27,17 @@
 
 ## 📸 Screenshots
 
-### Dashboard
-![Dashboard](assets/images/proconnect_screenshot_1.png)
+### Home Page
+![Dashboard](assets/proconnect_screenshot_1.png)
 
 ### Profile Page
-![Profile](assets/images/proconnect_screenshot_2.png)
-
-### Notes Section
-![Notes](assets/images/proconnect_screenshot_3.png)
+![Profile](assets/proconnect_screenshot_2.png)
 
 ### Mobile View
-![Mobile](assets/images/proconnect_screenshot_4.png)
+![Notes](assets/proconnect_screenshot_3.png)
+
+### Mobile View
+![Mobile](assets/proconnect_screenshot_4.png)
 
 ---
 

@@ -7,6 +7,7 @@ import NavBar from '../Dashboard/NavBar';
 import toast from 'react-hot-toast';
 import { Navigate, useNavigate } from 'react-router';
 import ShortProfile from '../Dashboard/ShortProfile';
+import { motion } from "framer-motion";
 
 export default function MyNetwork() {
   const [authUser] = useAuth();
@@ -24,7 +25,8 @@ export default function MyNetwork() {
   return otherUser;
 });
 // console.log(connections)
-const [activeTab, setActiveTab] = useState('pending');
+const {activeTab, setActiveTab} = useDataContext();
+
   const PendingConnectionReq=myConnections.filter((user)=>{
     if(user.status_accepted ==null && user.userId._id!=authUser.user._id){
       return user;
@@ -59,10 +61,27 @@ const [activeTab, setActiveTab] = useState('pending');
   }
   return (
    <> <NavBar/>
-   <div className=" flex lg:flex-row flex-col w-full h-screen  bg-gray-100">
+   <div className="p-4 flex lg:flex-row flex-col w-full h-screen  bg-gray-100">
       {/* Sidebar */}
-     <ShortProfile/>
+     {/* Left Sidebar */}
+        <aside className="hidden md:block col-span-1 space-y-4">
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            className="bg-white dark:bg-gray-800 rounded-2xl shadow p-4"
+          >
+            <ShortProfile user={authUser?.user} />
+          </motion.div>
 
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow p-4">
+            <h3 className="font-semibold mb-2">Quick Links</h3>
+            <ul className="space-y-2 text-sm">
+              <li className="hover:text-blue-600 cursor-pointer">My Connections</li>
+              <li className="hover:text-blue-600 cursor-pointer">My Posts</li>
+              <li className="hover:text-blue-600 cursor-pointer">Messages</li>
+              <li className="hover:text-blue-600 cursor-pointer">Notifications</li>
+            </ul>
+          </div>
+        </aside>
       {/* Main Content */}
       <div className="flex-1 p-6">
         {/* Tabs */}

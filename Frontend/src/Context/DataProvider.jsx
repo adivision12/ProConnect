@@ -20,6 +20,7 @@ const [postForm, setPostForm] = useState(false);
   const [location,setLocation] = useState("India");
   const user = authUser?.user;
   
+  const [activeTab, setActiveTab] = useState('pending');
 useEffect(() => {
 fetch("https://ipapi.co/json/")
     .then(res => res.json())
@@ -28,10 +29,12 @@ fetch("https://ipapi.co/json/")
       setLocation(data.city+" "+ data.region+ " "+data.country_name);
     });
 }, []);
+// console.log(userProfile)
 
+  const [passModal,setPassModal]=useState(false);
 
     return(
-        <DataContext.Provider value={{isOpen,isOpenAbout,setIsOpenAbout,setIsOpen,location,postForm, setPostForm,openUpdateEduForm,setOpenUpdateEduForm,currUserProfile,setCurrUserProfile,userProfile,setUserProfile}}>
+        <DataContext.Provider value={{isOpen,isOpenAbout,setIsOpenAbout,setIsOpen,location,postForm, setPostForm,openUpdateEduForm,setOpenUpdateEduForm,currUserProfile,setCurrUserProfile,userProfile,setUserProfile,activeTab, setActiveTab,passModal,setPassModal}}>
             {children}
         </DataContext.Provider>
     )};

@@ -18,10 +18,12 @@ const userSchema=new mongoose.Schema({
         type:Boolean,
         default:true
     },
-    password:{
-        type:String,
-        required:true
-    },
+    password: { type: String }, // present if signed up via email+password
+  authProvider: { type: String, enum: ['local', 'google', 'email-otp'], required: true },
+  otp: {
+    hash: String,
+    expiresAt: Date
+  },
     profilePicture:{
         type:String,
         default:"https://res.cloudinary.com/dcgdg9ths/image/upload/v1751804674/ProConnect/ytgnrlngrrzx3zam9q4g.png"

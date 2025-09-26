@@ -1,158 +1,292 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { useAuth } from "../Context/AuthProvider";
+import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import logo from "../assets/logo2.png";
+import { useNavigate } from "react-router";
+import { useAuth } from "../Context/AuthProvider";
 import Loading from "../Dashboard/Loading";
 
-export default function SplitAuth() {
-  const [isLogin, setIsLogin] = useState(true);
-  const navigate = useNavigate();
+export default function Auth() {
+  const [isLogin, setIsLogin] = useState(true); // login/signup toggle
+  const [useOtp, setUseOtp] = useState(false); // login: password or otp
   const [authUser, setAuthUser] = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [signupOtpSent, setSignupOtpSent] = useState(false);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const navigate = useNavigate();
 
-  function inputHandler(e) {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  }
- const [isLoading, setIsLoading] = useState(false);
-  async function handleSubmit(e) {
+  // ------------------- HANDLERS -------------------
+  const handleAuth = async (e) => {
     e.preventDefault();
-    setIsLoading(true)
-    // console.log(formData)
-    const endpoint = isLogin ? "/api/login" : "/api/register";
-    const payload = isLogin
-      ? { email: formData.email, password: formData.password }
-      : formData;
-
+    setIsLoading(true);
     try {
-      const res = await fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      console.log(data);
-      setIsLoading(false);
-      if (data.success) {
-        if (isLogin) {
-          setAuthUser(data);
-          localStorage.setItem("auth", JSON.stringify(data));
-          toast.success("Login successful!");
-          setTimeout(() => navigate("/dashboard"), 200);
+      if (isLogin) {
+        if (useOtp) {
+          // LOGIN via OTP
+          const res = await fetch("/api/verify-otp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, otp, isLogin }),
+          });
+          const data = await res.json();
+          if (data.success) {
+            localStorage.setItem("user", JSON.stringify(data));
+            setAuthUser(data);
+            toast.success("OTP Login successful!");
+            setTimeout(() => navigate("/dashboard"), 200);
+          } else toast.error(data.msg || "OTP verification failed");
         } else {
-          toast.success(data.msg || "Registered successfully!");
-          setTimeout(() => setIsLogin(true), 300);
+          // LOGIN via password
+          const res = await fetch("/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+          const data = await res.json();
+          if (data.success) {
+            localStorage.setItem("user", JSON.stringify(data));
+            setAuthUser(data);
+            toast.success("Login successful!");
+            setTimeout(() => navigate("/dashboard"), 200);
+          } else toast.error(data.msg || "Login failed");
         }
       } else {
-        toast.error(data.msg || "Something went wrong");
+        // SIGNUP
+        if (!signupOtpSent) return alert("Please verify your email OTP first");
+
+        const res = await fetch("/api/verify-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password, otp }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          localStorage.setItem("user", JSON.stringify(data));
+          toast.success("Signup successful!");
+          setIsLogin(true);
+          setTimeout(() => navigate("/dashboard"), 200);
+        } else toast.error(data.msg || "Signup failed");
       }
     } catch (err) {
-      toast.error("Server error");
+      console.error(err);
     }
-  }
+    setIsLoading(false);
+  };
+
+  const handleSendOtp = async (forSignup = false) => {
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, name, password, isLogin }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success("OTP sent to email!");
+        if (isLogin) setOtpSent(true);
+        else if (forSignup) setSignupOtpSent(true);
+      } else toast.error(data.msg || "Failed to send OTP");
+    } catch (err) {
+      console.error(err);
+    }
+    setIsLoading(false);
+  };
+
+  // ------------------- GOOGLE LOGIN -------------------
+  useEffect(() => {
+    /* global google */
+    if (window.google) {
+      google.accounts.id.initialize({
+        // 1085194267725-bcqk06pboe7bfjab17ttj7aq7hm4839o.apps.googleusercontent.com
+        client_id: "1085194267725-26qrpv843psqjg62l2319fsnli4iva6j.apps.googleusercontent.com",
+        callback: handleGoogleLogin,
+      });
+      google.accounts.id.renderButton(
+        document.getElementById("googleBtn"),
+        { theme: "outline", size: "large" }
+      );
+    }
+  }, []);
+
+  const handleGoogleLogin = async (response) => {
+    try {
+      const res = await fetch("/api/google-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: response.credential }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        localStorage.setItem("user", JSON.stringify(data));
+        setAuthUser(data);
+        toast.success("Google login successful!");
+        setTimeout(() => navigate("/dashboard"), 200);
+      } else {
+        toast.error(data.msg || "Google login failed");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#fdfbfb] to-[#ebedee]">
-      {/* Navbar */}
-      <div className="absolute top-0 left-0 w-full flex justify-between items-center px-6 py-4 bg-white shadow">
-        <h1 className="text-2xl font-bold text-blue-700"> <img src={logo} alt="ProConnect Logo" className="h-12" /></h1>
-        <button   onClick={() => setIsLogin(!isLogin)} className="bg-red-600 text-white text-sm md:text-lg px-2 md:px-6 py-1 rounded-full shadow hover:bg-red-700">
-          Be a part
-        </button>
-      </div>
-{isLoading && <Loading/>}
-      {/* Auth Card */}
-      <motion.div
-        key={isLogin ? "login" : "signup"}
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        className="w-[90%] md:w-[60%] lg:w-[50%] bg-white rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden mt-20"
-      >
-        {/* Left Panel */}
-        <div className="hidden md:flex w-1/2 bg-gradient-to-br from-blue-700 to-indigo-600 text-white p-8 flex-col justify-center items-center">
-          <h2 className="text-3xl font-bold mb-3">
-            {isLogin ? "Welcome Back!" : "Join Us Today!"}
-          </h2>
-          <p className="text-sm text-center mb-6">
-            {isLogin
-              ? "Log in and reconnect with your network."
-              : "Sign up to explore real, authentic connections."}
-          </p>
-          <button
-            onClick={() => setIsLogin(!isLogin)}
-            className="bg-white text-blue-700 px-5 py-2 rounded-full font-semibold hover:bg-gray-200 transition"
-          >
-            {isLogin ? "Create Account" : "Back to Login"}
-          </button>
-        </div>
+    <>
+    {isLoading && <Loading/>}
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+        <h2 className="text-2xl font-bold text-center mb-6">
+          {isLogin ? "Login to ProConnect" : "Signup for ProConnect"}
+        </h2>
 
-        {/* Right Form Panel */}
-        <div className="w-full md:w-1/2 p-8">
-          <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">
-            {isLogin ? "Login" : "Sign Up"}
-          </h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {!isLogin && (
-             
-               
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Full Name"
-                  value={formData.name}
-                  onChange={inputHandler}
-                  className="w-full px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-            
-            )}
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={inputHandler}
-              className="w-full px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={inputHandler}
-              className="w-full px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+        {/* LOGIN: password/otp toggle */}
+        {isLogin && (
+          <div className="flex justify-center gap-4 mb-6">
             <button
-              type="submit"
-              className={`w-full ${
-                isLogin ? "bg-blue-600" : "bg-blue-600"
-              } text-white py-2 rounded-full hover:brightness-110 transition`}
+              type="button"
+              onClick={() => setUseOtp(false)}
+              className={`px-4 py-2 rounded-lg ${!useOtp ? "bg-blue-600 text-white" : "bg-gray-200"}`}
             >
-              {isLogin ? "Login" : "Sign Up"}
+              Password
             </button>
-          </form>
-
-          {/* Small screen toggle */}
-          <div className="text-center mt-4 md:hidden">
-            <span className="text-gray-600">
-              {isLogin ? "Don't have an account?" : "Already have an account?"}
-            </span>
             <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="ml-2 text-blue-700 font-semibold underline"
+              type="button"
+              onClick={() => setUseOtp(true)}
+              className={`px-4 py-2 rounded-lg ${useOtp ? "bg-blue-600 text-white" : "bg-gray-200"}`}
             >
-              {isLogin ? "Sign Up" : "Login"}
+              OTP
             </button>
           </div>
+        )}
+
+        <form onSubmit={handleAuth} className="space-y-4">
+          {!isLogin && (
+            <input
+              type="text"
+              placeholder="Full Name"
+              className="w-full p-3 border rounded-lg"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          )}
+
+          <div className="relative">
+            <input
+              type="email"
+              placeholder="Email"
+              className="w-full p-3 border rounded-lg"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+
+            {!isLogin && !signupOtpSent && email && (
+              <button
+                type="button"
+                onClick={() => handleSendOtp(true)}
+                className="absolute right-2 top-2 bg-green-600 text-white px-3 py-1 rounded-lg text-sm"
+              >
+                Send OTP
+              </button>
+            )}
+
+            {!isLogin && signupOtpSent && email && (
+              <button
+                type="button"
+                onClick={() => {
+                  handleSendOtp(true);
+                  setOtp("");
+                }}
+                className="absolute right-2 top-2 bg-green-600 text-white px-3 py-1 rounded-lg text-sm"
+              >
+                Resend OTP
+              </button>
+            )}
+          </div>
+
+          {!isLogin && signupOtpSent && (
+            <input
+              type="text"
+              placeholder="Enter OTP"
+              className="w-full p-3 border rounded-lg"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              required
+            />
+          )}
+
+          {(!isLogin || (isLogin && !useOtp)) && (
+            <input
+              type="password"
+              placeholder="Password"
+              className="w-full p-3 border rounded-lg"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required={!useOtp || !isLogin}
+            />
+          )}
+
+          {isLogin && useOtp && otpSent && (
+            <input
+              type="text"
+              placeholder="Enter OTP"
+              className="w-full p-3 border rounded-lg"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              required
+            />
+          )}
+
+          {isLogin && useOtp && !otpSent && email && (
+            <button
+              type="button"
+              onClick={() => handleSendOtp(false)}
+              className="w-full bg-green-600 text-white py-3 rounded-lg mt-2"
+            >
+              Send OTP
+            </button>
+          )}
+
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg"
+          >
+            {isLogin ? (useOtp ? "Login with OTP" : "Login") : "Signup"}
+          </button>
+        </form>
+
+        {/* GOOGLE LOGIN */}
+        <div className="mt-6">
+          <div className="flex items-center justify-center">
+            <span className="text-gray-400">or continue with</span>
+          </div>
+          <div className="flex justify-center mt-4">
+            <div id="googleBtn"></div>
+          </div>
         </div>
-      </motion.div>
-    </div>
+
+        {/* SWITCH LOGIN/SIGNUP */}
+        <p className="mt-6 text-center text-gray-600">
+          {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+          <button
+            type="button"
+            onClick={() => {
+              setIsLogin(!isLogin);
+              setUseOtp(false);
+              setOtpSent(false);
+              setSignupOtpSent(false);
+              setOtp("");
+            }}
+            className="text-blue-600 font-semibold"
+          >
+            {isLogin ? "Sign Up" : "Login"}
+          </button>
+        </p>
+      </div>
+    </div></>
   );
 }

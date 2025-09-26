@@ -3,7 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 export const AuthContext = createContext();
 
 export default function AuthProvider({ children }) {
-    const initialUserState = localStorage.getItem("auth");
+    const initialUserState = localStorage.getItem("user");
     const [authUser, setAuthUser] = useState(initialUserState ? JSON.parse(initialUserState) : undefined);
 
     const token = authUser?.token || authUser?.user?.token;

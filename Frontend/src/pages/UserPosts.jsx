@@ -64,7 +64,13 @@ const { id } = useParams();
 
     {/* Profile Card */}
     {currUserProfile && <div
-  onClick={() => navigate(`/userProfile/${id}`)}
+  onClick={() => {
+    if(currUserProfile?.userId?._id===authUser?.user?._id){
+      navigate(`/profile`)
+    }else{
+      navigate(`/userProfile/${id}`)
+    }
+  }}
   className="hidden lg:block w-full h-[50%] sm:w-[90%] md:w-[60%] lg:w-[25%] border bg-white p-6 rounded-lg shadow hover:shadow-md transition cursor-pointer relative"
 >
   {/* Cover Image */}

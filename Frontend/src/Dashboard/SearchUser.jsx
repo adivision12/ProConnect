@@ -42,6 +42,7 @@ const SearchUser = () => {
               className="flex items-center gap-3 p-2 hover:bg-gray-100 transition"
             >
               <img
+               referrerPolicy="no-referrer"
                 src={user.userId.profilePicture || "/default-avatar.png" }
                 alt="dp"
                 className="w-8 h-8 rounded-full object-cover"
