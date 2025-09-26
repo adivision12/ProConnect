@@ -17,7 +17,7 @@ import toast from 'react-hot-toast';
 import LeftSidebar from './LeftSidebar';
 import RightSideBar from './RightSideBar';
 
-
+import ReactMarkdown from "react-markdown";
 export default function UserProfile() {
  
 const { id } = useParams();
@@ -320,7 +320,7 @@ const openPosts=(id2)=>{
      <div className='flex justify-between'> <h2 className="text-2xl font-bold mb-4">About</h2>
    
      </div>
-      <p> {currUserProfile?.about || ""}</p>
+      <p> <ReactMarkdown>{currUserProfile?.about|| ""}</ReactMarkdown></p>
     </section>}
   
 <section className="bg-white rounded-xl shadow p-6 mt-6">

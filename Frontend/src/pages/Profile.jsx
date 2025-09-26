@@ -17,6 +17,8 @@ import RightSideBar from './RightSideBar';
 import LeftSidebar from './LeftSidebar';
 import AllUsers from '../Users/Users';
 import { AchievementsModal, SkillsModal } from '../Modals/SkillsModal';
+import ReactMarkdown from "react-markdown";
+
 
 export default function Profile() {
   const [authUser, setAuthUser] = useAuth();
@@ -233,7 +235,7 @@ export default function Profile() {
               <i className="fa-solid fa-pencil text-gray-600"></i>
             </button>
           </div>
-          <p className="text-gray-700 leading-relaxed">{currUserProfile?.about || 'No about information yet. Add something here ✨'}</p>
+          <p className="text-gray-700 leading-relaxed">{<ReactMarkdown>{currUserProfile?.about}</ReactMarkdown> || 'No about information yet. Add something here ✨'}</p>
         </section>
 
         {/* Skills */}
