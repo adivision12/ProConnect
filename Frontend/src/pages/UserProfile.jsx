@@ -223,7 +223,10 @@ const openPosts=(id2)=>{
   <NavBar/>
   <div className="max-w-6xl mx-auto p-6">
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-           {currUserProfile && <LeftSidebar user={currUserProfile}/>}
+       <div className="hidden lg:block lg:col-span-1">
+               {currUserProfile && <LeftSidebar className='hidden md:block' user={currUserProfile}/>}
+                </div>
+           
 {/* <LeftSideBar2 isOwnProfile={false} /> */}
 
 
@@ -314,8 +317,10 @@ const openPosts=(id2)=>{
 
         </div>
       </div>
-{ allUsers &&     <RightSideBar allUsers={allUsers}/>
-}    </div>
+       <div className="hidden lg:block lg:col-span-1">
+             { allUsers &&     <RightSideBar className='hidden md:block' allUsers={allUsers}/>
+}     </div>
+  </div>
 {currUserProfile?.about && <section  className="bg-white rounded-xl shadow p-6 mt-6">
      <div className='flex justify-between'> <h2 className="text-2xl font-bold mb-4">About</h2>
    
@@ -348,7 +353,10 @@ const openPosts=(id2)=>{
          
           <div className='flex gap-4'>
             <PostCard post={myPosts[0]}/>
-          { myPosts.length>1 && <PostCard post={myPosts[1]}/>}
+                   <div className="hidden lg:block lg:col-span-1">
+                      { myPosts.length>1 && <PostCard post={myPosts[1]}/>}
+
+</div>
           </div>
            <div onClick={()=>openPosts(currUserProfile.userId._id)} className='cursor-pointer  hover:text-blue-600 text-center text-lg  '>
           Show All Posts  <i className=" fa-solid fa-arrow-right"></i>

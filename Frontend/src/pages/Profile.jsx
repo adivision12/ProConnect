@@ -270,7 +270,7 @@ export default function Profile() {
             <div className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <PostCard post={myPosts[0]} />
-                {myPosts[1] && <PostCard post={myPosts[1]} />}
+                {myPosts[1] && <PostCard className='hidden md:block' post={myPosts[1]} />}
               </div>
               <div onClick={() => openPosts(authUser.user._id)} className="text-center text-blue-600 cursor-pointer hover:underline font-medium">Show All Posts <i className="fa-solid fa-arrow-right ml-1"></i></div>
             </div>

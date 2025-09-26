@@ -31,34 +31,7 @@ export default function RightSideBar({allUsers}) {
   // Dummy trending tags
   const tags = ["#DSA", "#MERNStack", "#PlacementPrep", "#Internship"];
   const [authUser]=AllUsers();
-const [isConnect,setIsConnect]=useState(false);
-    const [isWithdraw,setIsWithdraw]=useState(false);
 
-  // async function sendConnectionReq(id){
-  //   setIsWithdraw(false);
-  //   setIsConnect(true);
-  //   const token=authUser.token?authUser.token:authUser.user.token;
-  //    const response = await fetch("/api/user/send_Connection_req", {
-  //             method: "POST",
-  //             headers: {
-  //                 'Content-Type': 'application/json',
-  //                  authorization:`Bearer ${token}`,
-  
-  //             },
-  //             body: JSON.stringify({connectionId:id}),
-  //         })
-          
-  //         const data = await response.json();
-  //         // console.log(data);
-  //           if(data.success){
-  //                     toast.success(data.msg)
-  //                     // setTempSendReqId(data.newReq._id)
-  //                 }
-  //                 if(!data.success){
-  //                    toast.error(data.msg)
-  //                 }
-          
-  // }
 
     const clickUser = (id) => {
     if (id === authUser?.user?._id) {
@@ -73,7 +46,6 @@ const [isConnect,setIsConnect]=useState(false);
       <div>
         <h4 className="font-semibold mb-3 text-md">People you may know</h4>
         {suggestions.map((user) => (
-          console.log("user in suggestions", user),
           <div
           
             key={user.id}
