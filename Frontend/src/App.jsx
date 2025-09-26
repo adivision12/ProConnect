@@ -74,7 +74,7 @@ export default function App() {
        
 
         {/* Catch-all: redirect to login */}
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        {/* <Route path="*" element={<Navigate to="/dashboard" />} /> */}
       </Routes>
     </>
   );

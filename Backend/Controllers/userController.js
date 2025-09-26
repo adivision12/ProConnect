@@ -5,86 +5,6 @@ const  User  = require("../Models/UserModel.js");
 const bcrypt=require("bcrypt");
 const crypto=require("crypto");
 
-module.exports.activeCheck=async (req,res) => {
-    return res.status(200).json({msg:"Running"})
-}
-
-const jwt = require('jsonwebtoken');
-
-const generateToken=(id,res)=>{
-    const token= jwt.sign({id},"mysecret",{
-        expiresIn:"30d",
-    })
-    res.cookie("jwt",token);
-    return token;
-}
-
-module.exports.checkToken=async (req,res) => {
-    try {
-        if(req.user){
-                    return res.status(200).json({msg:"Valid token",user:req.user,success:true})
-        }
-                return res.status(200).json({msg:"Invalid token",success:false})
-
-    } catch (err) {
-     return res.status(500).json({msg:err.message,success:false})
-    }
-}
-module.exports.register=async(req,res)=>{
-    try {
-        const {name,email,password}=req.body;
-        if(!name || !email || !password ){
-            return res.status(400).json({msg:"All fields are required", success:false})
-        }
-        // console.log(User)
-        const user =await User.findOne({$or:[{email},{email:email.toLowerCase()}]});
-        if(user)   return res.status(400).json({msg:"User already exists", success:false})
-
-        const hashedPass=await  bcrypt.hash(password,10);
-
-        const newUser=new User({
-            name,
-            email,
-            password:hashedPass
-        })
-        await newUser.save();
-
-        const newProfile=new Profile({userId:newUser._id})
-
-       await  newProfile.save();
-
-        return res.status(200).json({msg:"User Created",success:true})
-    } catch (err) {
-        return res.status(500).json({msg:err.message,success:false})
-
-    }
-}
-
-module.exports.login=async(req,res)=>{
-    try {
-        const {email,password}=req.body;
-        if(!email || !password ){
-            return res.status(400).json({msg:"All fields are required",success:false})
-        }
-       
-        const user =await User.findOne({$or:[{email},{email:email.toLowerCase()}]});
-        if(!user)   return res.status(400).json({msg:"User Does not exist",success:false})
-        const isMatch=await bcrypt.compare(password,user.password);
-
-        if(!isMatch)   return res.status(400).json({msg:"Invalid details",success:false})
-
-        const token=generateToken(user._id,res);
-
-       await User.updateOne({_id:user._id},{token});
-
-       const userProfile=await Profile.findOne({userId:user._id});
-        return res.json({token,msg:"Login Successfully",user,img:userProfile.coverPicture,success:true})
-
-    } catch (err) {
-        return res.status(500).json({msg:err.message,success:false})
-    }
-}
-
 module.exports.profilePicture=async(req,res)=>{
      const profilePic = req.files['profilePicture']?.[0]?.path || null;
     const coverPic = req.files['coverPicture']?.[0]?.path || null;
@@ -107,17 +27,17 @@ module.exports.profilePicture=async(req,res)=>{
 module.exports.updateUserProfile=async(req,res)=>{
     // const {token}=req.body.authUser;
     const {...newUserData}=req.body;
-    console.log(newUserData)
-    // console.log(req.body)
+    
     try {
         let user=req.user;
        if(user.name==newUserData.name && user.bio==newUserData.bio){
          return res.json({msg:"Updated something",success:false})
        }
-       console.log(user)
+    //    console.log(user)
         Object.assign(user,newUserData);
-       const updatedUser= await user.save();
-
+    
+        const updatedUser = await user.save();
+        // console.log(updatedUser)
         return res.json({msg:"user updated",user:updatedUser,success:true})
     } catch (err) {
         return res.status(500).json({msg:err.message,success:false})
@@ -130,8 +50,9 @@ module.exports.getUserAndProfile=async(req,res)=>{
         if(!user)   return res.status(400).json({msg:"User not found",success:false})
             // console.log(user)
         const userProfile=await Profile.findOne({userId:user._id})
-           .populate('userId','name email bio  profilePicture')    
+           .populate('userId','name email bio username profilePicture')    
 
+        //    console.log(userProfile)
         return res.json({"profile":userProfile,success:true}); 
     } catch (err) {
         return res.status(500).json({msg:err.message,success:false})
@@ -146,6 +67,7 @@ module.exports.getProfile=async(req,res)=>{
             // console.log(user)
         const userProfile=await Profile.findOne({userId:id})
            .populate('userId','name email bio username profilePicture')    
+        // const userProfile2=await Profile.findOne({userId:id})
 
         //    console.log(userProfile)
         return res.json({"profile":userProfile,success:true}); 
@@ -153,7 +75,6 @@ module.exports.getProfile=async(req,res)=>{
         return res.status(500).json({msg:err.message,success:false})
     }
 }
-
 
 
 module.exports.updateProfileDetails=async(req,res)=>{
@@ -167,28 +88,21 @@ module.exports.updateProfileDetails=async(req,res)=>{
                Object.assign(profileToUpdate,req.body);
            const updated= await profileToUpdate.save();
             // console.log(updated)
-            return res.json({msg:"profile updated ",success:true}); 
+            return res.json({msg:"profile updated ",profile:updated,success:true}); 
     } catch (err) {
          return res.status(500).json({msg:err.message,success:false})
     }
 }
-module.exports.getAllUserProfile = async (req, res) => {
+module.exports.getAllUserProfile=async(req,res)=>{
     try {
-        const user = req.user;
-        const id = req.query.id; // optional ID to exclude
-
-        const excludeIds = [user._id];
-        if (id) excludeIds.push(id);
-
-        const allUsers = await Profile.find({ userId: { $nin: excludeIds } })
-            .populate('userId', 'name bio email profilePicture');
-
-        return res.json({ allUsers, success: true });
+        // const user=req.user;
+        const allUsers=await Profile.find().populate('userId','name bio email  profilePicture') 
+        // console.log(allUsers)
+        return res.json({allUsers,success:false});
     } catch (err) {
-        return res.status(500).json({ msg: err.message, success: false });
+        return res.status(500).json({msg:err.message,success:false})
     }
-};
-
+}
 
 module.exports.sendConnectionReq=async(req,res)=>{
     const {connectionId}=req.body;
@@ -245,7 +159,6 @@ module.exports.getMyConnections=async(req,res)=>{
         return res.status(500).json({msg:err.message,success:false})
     }
 }
-
 module.exports.getAllConnections=async(req,res)=>{
     try {
             const allConnections=await Connection.find()

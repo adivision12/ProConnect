@@ -12,55 +12,54 @@ export default function Posts() {
    const {postForm, setPostForm} = useDataContext();
   //  const navigate=useNavigate();
   const [authUser] = useAuth();
+  
   return (
-    <div className="w-[95%] lg:w-[50%] mx-auto h-screen overflow-scroll scrollbar-hide">
-      {/* Create Post Input Box */}
-     
-      <div className="border-2 p-6 bg-white m-2 lg:m-6 rounded-lg">
-        <div className="flex items-center space-x-4">
+    
+
+    // Posts.jsx
+   <div className="flex-1 h-[calc(100vh-64px)] overflow-y-auto no-scrollbar p-1 space-y-6">
+      {/* Create Post */}
+      <div className="bg-white border rounded-2xl p-4 shadow-sm hover:shadow-md transition w-full">
+        <div className="flex items-center gap-3">
           <img
             src={authUser.user.profilePicture}
             alt="dp"
-            className="border border-black rounded-full h-12 w-12 object-cover"
+            className="h-12 w-12 rounded-full object-cover border"
           />
           <input
             onClick={() => setPostForm(true)}
-            type="text"
-            placeholder="Start a post"
-            className="w-full h-12 border border-gray-300 rounded-full px-4 cursor-pointer"
+            placeholder="What's on your mind?"
+            className="w-full bg-gray-100 rounded-full px-4 py-2 text-sm cursor-pointer hover:bg-gray-200 transition"
             readOnly
           />
         </div>
-        <div className="flex justify-evenly text-md mt-4 text-gray-600">
-          <p className="cursor-pointer">
-            <i className="fa-solid fa-video text-green-500"></i>&nbsp;Video
-          </p>
-          <p className="cursor-pointer">
-            <i className="fa-solid fa-image text-blue-500"></i>&nbsp;Photo
-          </p>
-          <p className="cursor-pointer">
-            <i className="fa-solid fa-newspaper text-red-500"></i>&nbsp;Article
-          </p>
+        <div className="flex justify-between mt-3 text-sm text-gray-600">
+          <button className="flex items-center gap-2 hover:text-blue-600">
+            <i className="fa-solid fa-video text-green-500" /> Video
+          </button>
+          <button className="flex items-center gap-2 hover:text-blue-600">
+            <i className="fa-solid fa-image text-blue-500" /> Photo
+          </button>
+          <button className="flex items-center gap-2 hover:text-blue-600">
+            <i className="fa-solid fa-lightbulb text-yellow-500" /> AI Post
+          </button>
         </div>
       </div>
 
-      {/* Display Posts */}
+      {/* Posts List */}
       {loading ? (
         <p className="text-center text-gray-500">Loading posts...</p>
       ) : allPosts.length === 0 ? (
-        <div className="border-2 p-6 bg-white m-6 rounded-lg shadow-sm">
-         No post
+        <div className="bg-white border rounded-xl p-6 text-center text-gray-500 w-full">
+          No posts yet
         </div>
       ) : (
-        allPosts.map((post) => (
-          <PostCard post={post} key={post._id}/>
-        ))
+        allPosts.map((post) => <PostCard post={post} key={post._id} />)
       )}
 
-      {/* Post Form Modal */}
-      {postForm && (
-        <CreatePost/>
-      )}
+      {postForm && <CreatePost />}
     </div>
+
+
   );
 }

@@ -56,7 +56,14 @@ const profileSchema=new mongoose.Schema({
         type:[educationSchema],
         default:[]
     },
-
+    skills:{
+        type:[String],
+        default:[]
+    },
+    achievements:{
+        type:[String],
+        default:[]
+    }
 })
 
 
