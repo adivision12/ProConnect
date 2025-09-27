@@ -135,19 +135,19 @@ export default function CreatePost() {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed top-[-25px] inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       {(isLoading || aiLoading) && <Loading />}
-      <div className="bg-white rounded-2xl shadow-xl w-[95%] max-w-lg p-6 relative animate-fadeIn">
+      <div className="bg-white rounded-2xl shadow-xl w-[95%] max-w-lg p-6 sm:p-2 relative animate-fadeIn">
         {/* Close Button */}
         <button
           onClick={() => setPostForm(false)}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl"
+          className="absolute top-3 right-2 text-gray-500 hover:text-gray-800 text-2xl"
         >
           &times;
         </button>
 
         {/* Header */}
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">Create a Post</h2>
+        <h2 className="text-xl  font-semibold mb-4 text-gray-800">Create a Post</h2>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
